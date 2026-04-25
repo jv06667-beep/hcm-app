@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora HCM para Carreteras de Dos Carriles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-decorations">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="app-container">
+        <header>
+            <h1>Calculadora HCM para Carreteras de Dos Carriles</h1>
+            <p>Análisis de Capacidad y Nivel de Servicio</p>
+        </header>
+
+        <div class="content-grid">
+            <section class="glass-panel input-section">
+                <h2>Parámetros de Entrada</h2>
+                <form id="hcm-form">
+                    
+                    <div class="form-section">
+                        <h3>1. Tráfico (Análisis Direccional)</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="vd_input">Volumen direccional análisis (Vd) [veh/h]</label>
+                                <input type="number" id="vd_input" value="1275" min="0" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="vo_input">Volumen direccional opuesto (Vo) [veh/h]</label>
+                                <input type="number" id="vo_input" value="450" min="0" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="analysisType">Tipo de análisis a mostrar</label>
+                                <select id="analysisType">
+                                    <option value="all">Completo (ATS / PTSF / LOS)</option>
+                                    <option value="ats">Solo ATS</option>
+                                    <option value="ptsf">Solo PTSF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>2. Factores</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="phf">Factor de hora pico ( PHF )</label>
+                                <input type="number" id="phf" value="0.95" step="0.01" min="0.25" max="1" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="trucks">Vehículos pesados ( PT ) [%]</label>
+                                <input type="number" id="trucks" value="10" min="0" max="100" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="fp">Factor de población ( fp )</label>
+                                <input type="number" id="fp" value="1.0" step="0.01" min="0.85" max="1.0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3. Geometría y Entorno</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="terrain">Tipo de terreno</label>
+                                <select id="terrain">
+                                    <option value="plano">Plano (Level)</option>
+                                    <option value="ondulado" selected>Ondulado (Rolling)</option>
+                                    <option value="montanoso">Montañoso (Mountainous)</option>
+                                    <option value="escarpado">Escarpado</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="grade">Pendiente de subida (%) [≥3% para impacto]</label>
+                                <input type="number" id="grade" value="0" min="0" max="15" step="0.1" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="gradeLength">Longitud de la pendiente (km)</label>
+                                <input type="number" id="gradeLength" value="2.0" min="0" max="50" step="0.1" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="laneWidth">Ancho de carril [m]</label>
+                                <select id="laneWidth">
+                                    <option value="3.6" selected>≥ 3.6 m</option>
+                                    <option value="3.3">3.3 - 3.5 m</option>
+                                    <option value="3.0">3.0 - 3.2 m</option>
+                                    <option value="2.7">2.7 - 2.9 m</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="shoulderWidth">Ancho de hombro [m]</label>
+                                <select id="shoulderWidth">
+                                    <option value="1.8" selected>≥ 1.8 m</option>
+                                    <option value="1.2">1.2 - 1.5 m</option>
+                                    <option value="0.6">0.6 - 0.9 m</option>
+                                    <option value="0.0">0.0 - 0.3 m</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="accessPoints">Puntos de acceso [pts/km]</label>
+                                <input type="number" id="accessPoints" value="8" min="0" max="50" step="1" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="noPassing">Zonas de no rebase [%]</label>
+                                <input type="number" id="noPassing" value="40" min="0" max="100" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="ffs">Velocidad base flujo libre (BFFS) [km/h]</label>
+                                <input type="number" id="ffs" value="100" min="50" max="130" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos ocultos -->
+                    <input type="hidden" id="rvs" value="0">
+
+                    <button type="submit" class="btn-primary">Calcular Nivel de Servicio</button>
+                </form>
+            </section>
+
+            <section class="glass-panel results-section">
+                <h2>Resultados</h2>
+                <div class="los-display" id="los-display">
+                    <span class="los-label">Nivel de Servicio</span>
+                    <div class="los-grade" id="los-grade">-</div>
+                    <p class="los-interpretation" id="los-interpretation">--</p>
+                </div>
+
+                <div class="intermediate-calculations">
+                    <h4>Cálculos Intermedios</h4>
+                    <div class="calc-badges">
+                        <span class="badge" title="Equivalencia Vehículos Pesados">ET: <strong id="et-val">--</strong></span>
+                        <span class="badge" title="Factor de Vehículos Pesados">fHV: <strong id="fhv-val">--</strong></span>
+                        <span class="badge" title="Velocidad de Flujo Libre">FFS: <strong id="ffs-val">--</strong> km/h</span>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-title">Flujo Equivalente (vp)</span>
+                        <span class="metric-value" id="vp-val">--</span>
+                        <span class="metric-unit">pc/h</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Velocidad (ATS)</span>
+                        <span class="metric-value" id="ats-val">--</span>
+                        <span class="metric-unit">km/h</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Tpo. Siguiendo (PTSF)</span>
+                        <span class="metric-value" id="ptsf-val">--</span>
+                        <span class="metric-unit">%</span>
+                    </div>
+                </div>
+
+
+
+                <div class="alerts" id="alerts-container"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="hcmCalculations.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
